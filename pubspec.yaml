@@ -1,7 +1,6 @@
 name: flutter_macos_webview
 description: Flutter plugin that lets you display native WebView on macOS
 version: 0.0.1
-author: vanelizarov<elizarov.vanya@gmail.com>
 homepage: https://github.com/vanelizarov/flutter_macos_webview
 
 environment:
