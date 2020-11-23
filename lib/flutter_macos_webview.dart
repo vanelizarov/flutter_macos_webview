@@ -1,13 +1,33 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:meta/meta.dart';
 import 'package:flutter/services.dart';
 
 const _kChannel = 'com.vanelizarov.flutter_macos_webview/method';
 
-class FlutterMacosWebview {
-  FlutterMacosWebview({
-    this.onLaunch,
+enum PresentationStyle {
+  modal,
+  sheet,
+  // TODO: window
+}
+
+class FlutterMacOSWebView {
+  /// Creates a [FlutterMacOSWebView] with the specified callbacks:
+  ///
+  /// [onOpen] - the WebView has been opened
+  ///
+  /// [onClose] - the WebView has been closed
+  ///
+  /// [onPageStarted] - the WebView has started loading
+  /// url you've passed initially and for all subsequent url changes (user clicks a link, etc)
+  ///
+  /// [onPageFinished] - the WebView has finished loading url
+  ///
+  /// [onWebResourceError] - the WebView failed loading page or some Javascript exception occured.
+  /// See [WebResourceErrorType] enum
+  FlutterMacOSWebView({
+    this.onOpen,
     this.onClose,
     this.onPageStarted,
     this.onPageFinished,
@@ -18,24 +38,74 @@ class FlutterMacosWebview {
 
   final MethodChannel _channel;
 
-  final void Function() onLaunch;
+  final void Function() onOpen;
   final void Function() onClose;
   final void Function(String url) onPageStarted;
   final void Function(String url) onPageFinished;
   final void Function(WebResourceError error) onWebResourceError;
 
-  Future<void> launch({@required String url}) async {
-    await _channel.invokeMethod('launch', {'url': url});
+  /// Opens WebView with specified params
+  ///
+  /// [url] - required param containing initial URL. Must not be null or empty
+  ///
+  /// [javascriptEnabled] - enables or disables Javascript execution until next `open` call.
+  /// Must not be null
+  ///
+  /// [presentationStyle] - WebView window presentation style. Available styles
+  /// are `modal` and `sheet` depending on which plugin calls respectively
+  /// `presentAsModalWindow` or `presentAsSheet` from `NSViewController`.
+  /// Must not be null
+  ///
+  /// [size] - size of the WebView in pixels
+  ///
+  /// [userAgent] - custom User Agent
+  ///
+  /// [modalTitle] - title for window when using `modal` presentation style
+  ///
+  /// [sheetCloseButtonTitle] - title for close button when using `sheet` presentation style
+  Future<void> open({
+    @required String url,
+    bool javascriptEnabled = true,
+    PresentationStyle presentationStyle = PresentationStyle.sheet,
+    Size size,
+    // Offset origin,
+    String userAgent,
+    String modalTitle = '',
+    String sheetCloseButtonTitle = 'Close',
+  }) async {
+    assert(url != null);
+    assert(url.trim().isNotEmpty);
+
+    assert(javascriptEnabled != null);
+    assert(presentationStyle != null);
+    assert(modalTitle != null);
+    assert(sheetCloseButtonTitle != null);
+
+    await _channel.invokeMethod('open', {
+      'url': url,
+      'javascriptEnabled': javascriptEnabled,
+      'presentationStyle': presentationStyle.index,
+      'customSize': size != null,
+      'width': size?.width,
+      'height': size?.height,
+      'userAgent': userAgent,
+      'modalTitle': modalTitle,
+      'sheetCloseButtonTitle': sheetCloseButtonTitle,
+      // 'customOrigin': origin != null,
+      // 'x': origin?.dx,
+      // 'y': origin?.dy,
+    });
   }
 
+  /// Closes WebView
   Future<void> close() async {
     await _channel.invokeMethod('close');
   }
 
   Future<void> _onMethodCall(MethodCall call) async {
     switch (call.method) {
-      case 'onLaunch':
-        onLaunch?.call();
+      case 'onOpen':
+        onOpen?.call();
         return;
       case 'onClose':
         onClose?.call();
@@ -82,6 +152,8 @@ class WebResourceError {
   final WebResourceErrorType errorType;
 }
 
+/// Enum describing error types that can possibly return from plugin.
+/// [Apple Docs](https://developer.apple.com/documentation/webkit/wkerror/code)
 enum WebResourceErrorType {
   unknown,
   webContentProcessTerminated,

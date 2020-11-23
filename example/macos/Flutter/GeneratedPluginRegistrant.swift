@@ -8,5 +8,5 @@ import Foundation
 import flutter_macos_webview
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  FlutterMacosWebviewPlugin.register(with: registry.registrar(forPlugin: "FlutterMacosWebviewPlugin"))
+  FlutterMacOSWebViewPlugin.register(with: registry.registrar(forPlugin: "FlutterMacOSWebViewPlugin"))
 }
