@@ -9,13 +9,6 @@ import Cocoa
 import FlutterMacOS
 import WebKit
 
-enum PresentationStyle: Int {
-    case modal = 0
-    case sheet = 1
-}
-
-let kWebViewCloseNotification = Notification.Name("SheetCloseNotification")
-
 //class BarButton: NSButton {
 //    override func highlight(_ flag: Bool) {
 //        <#code#>
@@ -23,6 +16,13 @@ let kWebViewCloseNotification = Notification.Name("SheetCloseNotification")
 //}
 
 class WebViewController: NSViewController {
+    enum PresentationStyle: Int {
+        case modal = 0
+        case sheet = 1
+    }
+    
+    static let closeNotification = Notification.Name("WebViewCloseNotification")
+    
     private let webview: WKWebView
     
     private let frame: CGRect
@@ -154,7 +154,7 @@ class WebViewController: NSViewController {
 
 extension WebViewController: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
-        NotificationCenter.default.post(name: kWebViewCloseNotification, object: nil)
+        NotificationCenter.default.post(name: WebViewController.closeNotification, object: nil)
     }
 }
 

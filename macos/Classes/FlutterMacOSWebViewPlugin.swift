@@ -3,16 +3,19 @@ import FlutterMacOS
 import WebKit
 
 public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
-    private let channel: FlutterMethodChannel!
+    private let channel: FlutterMethodChannel
+    private let registrar: FlutterPluginRegistrar
     
-    private lazy var parentViewController: NSViewController = {
-        return NSApp.keyWindow!.contentViewController!
+    private lazy var parentViewController: NSViewController? = {
+        return NSApp.windows.first { (w) -> Bool in
+            return w.contentViewController?.view == registrar.view
+        }?.contentViewController
     }()
     private var webViewController: WebViewController?
 
-    required init(channel: FlutterMethodChannel) {
+    required init(channel: FlutterMethodChannel, registrar: FlutterPluginRegistrar) {
         self.channel = channel
-            
+        self.registrar = registrar
         super.init()
     }
     
@@ -21,7 +24,7 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
             name: "com.vanelizarov.flutter_macos_webview/method",
             binaryMessenger: registrar.messenger
         )
-        let instance = FlutterMacOSWebViewPlugin(channel: channel)
+        let instance = FlutterMacOSWebViewPlugin(channel: channel, registrar: registrar)
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
@@ -46,10 +49,21 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
             return
         }
         
-        let presentationStyle = PresentationStyle(rawValue: args["presentationStyle"] as! Int)!
+        guard let parentCtrl = parentViewController else {
+            result(FlutterError(
+                code: "NO_PARENT_WINDOW",
+                message: "No parent window",
+                details: nil
+            ))
+            return
+        }
+        
+        let presentationStyle = WebViewController.PresentationStyle(
+            rawValue: args["presentationStyle"] as! Int
+        )!
                 
         if webViewController == nil {
-            let parentFrame = parentViewController.view.frame
+            let parentFrame = parentCtrl.view.frame
             
             var width = parentFrame.size.width
             var height = parentFrame.size.height
@@ -100,17 +114,17 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
         
         webViewCtrl.loadUrl(url: url)
                 
-        if (!parentViewController.presentedViewControllers!.contains(webViewCtrl)) {
+        if (!parentCtrl.presentedViewControllers!.contains(webViewCtrl)) {
             if (presentationStyle == .modal) {
-                parentViewController.presentAsModalWindow(webViewCtrl)
+                parentCtrl.presentAsModalWindow(webViewCtrl)
             } else {
-                parentViewController.presentAsSheet(webViewCtrl)
+                parentCtrl.presentAsSheet(webViewCtrl)
             }
             
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(close(_:)),
-                name: kWebViewCloseNotification,
+                name: WebViewController.closeNotification,
                 object: nil
             )
             
@@ -121,16 +135,21 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
     }
     
     @objc private func close(_ sender: Any?) {
-        guard let webViewCtrl = webViewController else { return }
+        guard
+            let webViewCtrl = webViewController,
+            let parentCtrl = parentViewController
+        else {
+            return
+        }
 
-        if (parentViewController.presentedViewControllers!.contains(webViewCtrl)) {
-            parentViewController.dismiss(webViewCtrl)
+        if (parentCtrl.presentedViewControllers!.contains(webViewCtrl)) {
+            parentCtrl.dismiss(webViewCtrl)
         }
         webViewController = nil
         
         NotificationCenter.default.removeObserver(
             self,
-            name: kWebViewCloseNotification,
+            name: WebViewController.closeNotification,
             object: nil
         )
         
