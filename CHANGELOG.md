@@ -1,3 +1,6 @@
+## 0.0.4
+* Removed suffix from `customUserAgent`
+
 ## 0.0.3
 * Fixed [#1](https://github.com/vanelizarov/flutter_macos_webview/issues/1): `parentViewController` now returns Flutter view's controller instead of `
 NSApp.keyWindow.contentViewController`

@@ -9,12 +9,6 @@ import Cocoa
 import FlutterMacOS
 import WebKit
 
-//class BarButton: NSButton {
-//    override func highlight(_ flag: Bool) {
-//        <#code#>
-//    }
-//}
-
 class WebViewController: NSViewController {
     enum PresentationStyle: Int {
         case modal = 0
@@ -39,7 +33,7 @@ class WebViewController: NSViewController {
     var userAgent: String? {
         set {
             if let userAgent = newValue {
-                webview.customUserAgent = "\(userAgent) Custom Agent"
+                webview.customUserAgent = userAgent //" Custom Agent"
             } else {
                 webview.customUserAgent = nil
             }
