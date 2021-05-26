@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 const _kChannel = 'com.vanelizarov.flutter_macos_webview/method';
 
@@ -73,13 +73,7 @@ class FlutterMacOSWebView {
     String modalTitle = '',
     String sheetCloseButtonTitle = 'Close',
   }) async {
-    assert(url != null);
     assert(url.trim().isNotEmpty);
-
-    assert(javascriptEnabled != null);
-    assert(presentationStyle != null);
-    assert(modalTitle != null);
-    assert(sheetCloseButtonTitle != null);
 
     await _channel.invokeMethod('open', {
       'url': url,
@@ -143,8 +137,7 @@ class WebResourceError {
     required this.description,
     this.domain,
     this.errorType,
-  })  : assert(errorCode != null),
-        assert(description != null);
+  });
 
   final int errorCode;
   final String description;
