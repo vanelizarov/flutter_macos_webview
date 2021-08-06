@@ -1,3 +1,6 @@
+## 0.0.5
+* Null-safety (thanks @Jesperpaulsen)
+
 ## 0.0.4
 * Removed suffix from `customUserAgent`
 
