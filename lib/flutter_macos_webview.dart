@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 const _kChannel = 'com.vanelizarov.flutter_macos_webview/method';
 
@@ -38,11 +38,11 @@ class FlutterMacOSWebView {
 
   final MethodChannel _channel;
 
-  final void Function() onOpen;
-  final void Function() onClose;
-  final void Function(String url) onPageStarted;
-  final void Function(String url) onPageFinished;
-  final void Function(WebResourceError error) onWebResourceError;
+  final void Function()? onOpen;
+  final void Function()? onClose;
+  final void Function(String? url)? onPageStarted;
+  final void Function(String? url)? onPageFinished;
+  final void Function(WebResourceError error)? onWebResourceError;
 
   /// Opens WebView with specified params
   ///
@@ -64,22 +64,16 @@ class FlutterMacOSWebView {
   ///
   /// [sheetCloseButtonTitle] - title for close button when using `sheet` presentation style
   Future<void> open({
-    @required String url,
+    required String url,
     bool javascriptEnabled = true,
     PresentationStyle presentationStyle = PresentationStyle.sheet,
-    Size size,
+    Size? size,
     // Offset origin,
-    String userAgent,
+    String? userAgent,
     String modalTitle = '',
     String sheetCloseButtonTitle = 'Close',
   }) async {
-    assert(url != null);
     assert(url.trim().isNotEmpty);
-
-    assert(javascriptEnabled != null);
-    assert(presentationStyle != null);
-    assert(modalTitle != null);
-    assert(sheetCloseButtonTitle != null);
 
     await _channel.invokeMethod('open', {
       'url': url,
@@ -139,17 +133,16 @@ class FlutterMacOSWebView {
 
 class WebResourceError {
   WebResourceError({
-    @required this.errorCode,
-    @required this.description,
+    required this.errorCode,
+    required this.description,
     this.domain,
     this.errorType,
-  })  : assert(errorCode != null),
-        assert(description != null);
+  });
 
   final int errorCode;
   final String description;
-  final String domain;
-  final WebResourceErrorType errorType;
+  final String? domain;
+  final WebResourceErrorType? errorType;
 }
 
 /// Enum describing error types that can possibly return from plugin.
