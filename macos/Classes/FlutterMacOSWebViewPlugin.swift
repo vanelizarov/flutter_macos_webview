@@ -8,7 +8,7 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
     
     private lazy var parentViewController: NSViewController? = {
         return NSApp.windows.first { (w) -> Bool in
-            return w.contentViewController?.view == registrar.view
+            return w.contentViewController?.view == registrar.view?.superview
         }?.contentViewController
     }()
     private var webViewController: WebViewController?
