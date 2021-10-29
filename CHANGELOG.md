@@ -1,3 +1,7 @@
+## 0.0.6
+* Fixed [#9](https://github.com/vanelizarov/flutter_macos_webview/issues/9) (thanks @mattmaddux)
+* Bump SDK min version
+
 ## 0.0.5
 * Null-safety (thanks @Jesperpaulsen)
 
