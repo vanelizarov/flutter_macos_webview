@@ -8,10 +8,10 @@ void main() => runApp(App());
 class App extends StatelessWidget {
   Future<void> _onOpenPressed(PresentationStyle presentationStyle) async {
     final webview = FlutterMacOSWebView(
-      // onOpen: () => print('Opened'),
+      onOpen: () => print('Opened'),
       onClose: (url) => print('Closed $url'),
-      // onPageStarted: (url) => print('Page started: $url'),
-      // onPageFinished: (url) => print('Page finished: $url'),
+      onPageStarted: (url) => print('Page started: $url'),
+      onPageFinished: (url) => print('Page finished: $url'),
       onWebResourceError: (err) {
         print(
           'Error: ${err.errorCode}, ${err.errorType}, ${err.domain}, ${err.description}',
