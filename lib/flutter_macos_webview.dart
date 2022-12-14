@@ -96,6 +96,11 @@ class FlutterMacOSWebView {
     await _channel.invokeMethod('close');
   }
 
+  /// Gets current URL of WebView
+  Future<String?> getCurrentUrl() async {
+    return await _channel.invokeMethod('getCurrentUrl');
+  }
+
   Future<void> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onOpen':

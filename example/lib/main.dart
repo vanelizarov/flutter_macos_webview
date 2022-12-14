@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_macos_webview/flutter_macos_webview.dart';
 
@@ -25,8 +27,9 @@ class App extends StatelessWidget {
           'Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
     );
 
-    // await Future.delayed(Duration(seconds: 5));
-    // await webview.close();
+    Timer.periodic(Duration(seconds: 3), (t) async {
+      print(await webview.getCurrentUrl());
+    });
   }
 
   @override
