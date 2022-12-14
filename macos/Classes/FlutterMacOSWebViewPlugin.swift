@@ -143,6 +143,8 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
             return
         }
 
+        let url = webViewCtrl.currentUrl()
+
         if parentCtrl.presentedViewControllers!.contains(webViewCtrl) {
             parentCtrl.dismiss(webViewCtrl)
         }
@@ -154,7 +156,7 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
             object: nil
         )
 
-        channel.invokeMethod("onClose", arguments: nil)
+        channel.invokeMethod("onClose", arguments: ["url": url])
     }
 
     private func close(_ sender: Any?, result: @escaping FlutterResult) {

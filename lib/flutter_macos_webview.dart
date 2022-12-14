@@ -39,7 +39,7 @@ class FlutterMacOSWebView {
   final MethodChannel _channel;
 
   final void Function()? onOpen;
-  final void Function()? onClose;
+  final void Function(String? url)? onClose;
   final void Function(String? url)? onPageStarted;
   final void Function(String? url)? onPageFinished;
   final void Function(WebResourceError error)? onWebResourceError;
@@ -107,7 +107,7 @@ class FlutterMacOSWebView {
         onOpen?.call();
         return;
       case 'onClose':
-        onClose?.call();
+        onClose?.call(call.arguments['url']);
         return;
       case 'onPageStarted':
         onPageStarted?.call(call.arguments['url']);
