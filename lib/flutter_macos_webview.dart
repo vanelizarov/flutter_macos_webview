@@ -29,6 +29,7 @@ class FlutterMacOSWebView {
   FlutterMacOSWebView({
     this.onOpen,
     this.onClose,
+    this.onSetUrl,
     this.onPageStarted,
     this.onPageFinished,
     this.onWebResourceError,
@@ -40,6 +41,7 @@ class FlutterMacOSWebView {
 
   final void Function()? onOpen;
   final void Function(String? url)? onClose;
+  final void Function(String? url)? onSetUrl;
   final void Function(String? url)? onPageStarted;
   final void Function(String? url)? onPageFinished;
   final void Function(WebResourceError error)? onWebResourceError;
@@ -108,6 +110,9 @@ class FlutterMacOSWebView {
         return;
       case 'onClose':
         onClose?.call(call.arguments['url']);
+        return;
+      case 'onSetUrl':
+        onSetUrl?.call(call.arguments['url']);
         return;
       case 'onPageStarted':
         onPageStarted?.call(call.arguments['url']);

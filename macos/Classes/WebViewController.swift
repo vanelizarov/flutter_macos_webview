@@ -80,6 +80,11 @@ class WebViewController: NSViewController {
         view.window?.close()
     }
 
+    @objc private func setUrl() {
+        let url = webview.url?.absoluteString
+        channel.invokeMethod("onSetUrl", arguments: ["url": url])
+    }
+
     @objc private func goBack() {
         webview.goBack()
     }
@@ -131,6 +136,19 @@ class WebViewController: NSViewController {
             closeButton.translatesAutoresizingMaskIntoConstraints = false
             bottomBar.addSubview(closeButton)
 
+            let setUrlButton = NSButton()
+            setUrlButton.isBordered = true
+            setUrlButton.bezelColor = .systemBlue
+            setUrlButton.title = "Set URL"
+            setUrlButton.font = NSFont.systemFont(ofSize: 14.0)
+            setUrlButton.bezelStyle = .rounded
+            setUrlButton.setButtonType(.momentaryPushIn)
+            setUrlButton.frame.size.width = 65.0
+            setUrlButton.target = self
+            setUrlButton.action = #selector(setUrl)
+            setUrlButton.translatesAutoresizingMaskIntoConstraints = false
+            bottomBar.addSubview(setUrlButton)
+
             let backButton = NSButton()
             backButton.isBordered = false
             backButton.title = "←"
@@ -163,6 +181,11 @@ class WebViewController: NSViewController {
                 closeButton.widthAnchor.constraint(equalToConstant: closeButton.frame.width + 20.0),
                 closeButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
 
+                setUrlButton.trailingAnchor.constraint(equalTo: closeButton.leadingAnchor),
+                setUrlButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
+                setUrlButton.widthAnchor.constraint(equalToConstant: setUrlButton.frame.width + 20.0),
+                setUrlButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
+
                 backButton.leadingAnchor.constraint(equalTo: bottomBar.leadingAnchor),
                 backButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
                 backButton.widthAnchor.constraint(equalToConstant: backButton.frame.width + 20.0),
@@ -172,6 +195,7 @@ class WebViewController: NSViewController {
                 forwardButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
                 forwardButton.widthAnchor.constraint(equalToConstant: forwardButton.frame.width + 20.0),
                 forwardButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
+
             ])
         } else {
             title = modalTitle

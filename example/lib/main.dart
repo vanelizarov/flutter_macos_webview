@@ -10,6 +10,7 @@ class App extends StatelessWidget {
     final webview = FlutterMacOSWebView(
       onOpen: () => print('Opened'),
       onClose: (url) => print('Closed $url'),
+      onSetUrl: (url) => print('Set url $url'),
       onPageStarted: (url) => print('Page started: $url'),
       onPageFinished: (url) => print('Page finished: $url'),
       onWebResourceError: (err) {
