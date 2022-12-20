@@ -80,6 +80,14 @@ class WebViewController: NSViewController {
         view.window?.close()
     }
 
+    @objc private func goBack() {
+        webview.goBack()
+    }
+
+    @objc private func goForward() {
+        webview.goForward()
+    }
+
     private func setupViews() {
         webview.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(webview)
@@ -114,7 +122,7 @@ class WebViewController: NSViewController {
             closeButton.isBordered = false
             closeButton.title = sheetCloseButtonTitle
             closeButton.font = NSFont.systemFont(ofSize: 14.0)
-            closeButton.contentTintColor = .systemBlue
+            closeButton.contentTintColor = .systemRed
             closeButton.bezelStyle = .rounded
             closeButton.setButtonType(.momentaryChange)
             closeButton.sizeToFit()
@@ -123,11 +131,47 @@ class WebViewController: NSViewController {
             closeButton.translatesAutoresizingMaskIntoConstraints = false
             bottomBar.addSubview(closeButton)
 
+            let backButton = NSButton()
+            backButton.isBordered = false
+            backButton.title = "←"
+            backButton.font = NSFont.systemFont(ofSize: 20.0, weight: NSFont.Weight.semibold)
+            backButton.contentTintColor = .systemBlue
+            backButton.bezelStyle = .rounded
+            backButton.setButtonType(.momentaryChange)
+            backButton.sizeToFit()
+            backButton.target = self
+            backButton.action = #selector(goBack)
+            backButton.translatesAutoresizingMaskIntoConstraints = false
+            bottomBar.addSubview(backButton)
+
+            let forwardButton = NSButton()
+            forwardButton.isBordered = false
+            forwardButton.title = "→"
+            forwardButton.font = NSFont.systemFont(ofSize: 20.0, weight: NSFont.Weight.semibold)
+            forwardButton.contentTintColor = .systemBlue
+            forwardButton.bezelStyle = .rounded
+            forwardButton.setButtonType(.momentaryChange)
+            forwardButton.sizeToFit()
+            forwardButton.target = self
+            forwardButton.action = #selector(goForward)
+            forwardButton.translatesAutoresizingMaskIntoConstraints = false
+            bottomBar.addSubview(forwardButton)
+
             constraints.append(contentsOf: [
                 closeButton.trailingAnchor.constraint(equalTo: bottomBar.trailingAnchor),
                 closeButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
                 closeButton.widthAnchor.constraint(equalToConstant: closeButton.frame.width + 20.0),
                 closeButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
+
+                backButton.leadingAnchor.constraint(equalTo: bottomBar.leadingAnchor),
+                backButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
+                backButton.widthAnchor.constraint(equalToConstant: backButton.frame.width + 20.0),
+                backButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
+
+                forwardButton.leadingAnchor.constraint(equalTo: backButton.trailingAnchor),
+                forwardButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
+                forwardButton.widthAnchor.constraint(equalToConstant: forwardButton.frame.width + 20.0),
+                forwardButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
             ])
         } else {
             title = modalTitle
