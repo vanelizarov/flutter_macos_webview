@@ -24,6 +24,7 @@ class WebViewController: NSViewController {
     private let presentationStyle: PresentationStyle
     private let modalTitle: String!
     private let sheetCloseButtonTitle: String
+    private let showSetUrlButton: Boolean
 
     var javascriptEnabled: Bool {
         set { webview.configuration.preferences.javaScriptEnabled = newValue }
@@ -46,13 +47,15 @@ class WebViewController: NSViewController {
         frame: NSRect,
         presentationStyle: PresentationStyle,
         modalTitle: String,
-        sheetCloseButtonTitle: String
+        sheetCloseButtonTitle: String,
+        showSetUrlButton: Boolean
     ) {
         self.channel = channel
         self.frame = frame
         self.presentationStyle = presentationStyle
         self.modalTitle = modalTitle
         self.sheetCloseButtonTitle = sheetCloseButtonTitle
+        self.showSetUrlButton = showSetUrlButton
 
         webview = WKWebView()
 
@@ -138,6 +141,7 @@ class WebViewController: NSViewController {
 
             let setUrlButton = NSButton()
             setUrlButton.isBordered = true
+            setUrlButton.isHidden = showSetUrlButton
             setUrlButton.bezelColor = .systemBlue
             setUrlButton.title = "Set URL"
             setUrlButton.font = NSFont.systemFont(ofSize: 14.0)
