@@ -65,8 +65,6 @@ class FlutterMacOSWebView {
   /// [modalTitle] - title for window when using `modal` presentation style
   ///
   /// [sheetCloseButtonTitle] - title for close button when using `sheet` presentation style
-  ///
-  /// [showSetUrlButton] - shows or hides button that calls the onSetUrl Callback
   Future<void> open({
     required String url,
     bool javascriptEnabled = true,
@@ -76,7 +74,6 @@ class FlutterMacOSWebView {
     String? userAgent,
     String modalTitle = '',
     String sheetCloseButtonTitle = 'Close',
-    bool showSetUrlButton = false,
   }) async {
     assert(url.trim().isNotEmpty);
 
