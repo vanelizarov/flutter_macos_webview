@@ -87,6 +87,7 @@ class FlutterMacOSWebView {
       'userAgent': userAgent,
       'modalTitle': modalTitle,
       'sheetCloseButtonTitle': sheetCloseButtonTitle,
+      'showSetUrlButton': onSetUrl != null,
       // 'customOrigin': origin != null,
       // 'x': origin?.dx,
       // 'y': origin?.dy,
