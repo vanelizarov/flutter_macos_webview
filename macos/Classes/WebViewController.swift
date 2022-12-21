@@ -260,10 +260,12 @@ extension WebViewController: NSWindowDelegate {
 
 extension WebViewController: WKUIDelegate {
     public func webView(_ webView: WKWebView, createWebViewWith _: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures _: WKWindowFeatures) -> WKWebView? {
-        guard let isMainFrame = navigationAction.targetFrame?.isMainFrame else { return nil }
-        if !isMainFrame {
-            webView.load(navigationAction.request)
+        if let frame = navigationAction.targetFrame,
+           frame.isMainFrame
+        {
+            return nil
         }
+        webView.load(navigationAction.request)
         return nil
     }
 }
