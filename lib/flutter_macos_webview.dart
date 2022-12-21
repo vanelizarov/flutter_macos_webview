@@ -29,6 +29,8 @@ class FlutterMacOSWebView {
   FlutterMacOSWebView({
     this.onOpen,
     this.onClose,
+    this.onSetUrl,
+    this.onTapSpecial,
     this.onPageStarted,
     this.onPageFinished,
     this.onWebResourceError,
@@ -39,7 +41,9 @@ class FlutterMacOSWebView {
   final MethodChannel _channel;
 
   final void Function()? onOpen;
-  final void Function()? onClose;
+  final void Function(String? url)? onClose;
+  final void Function(String? url)? onSetUrl;
+  final void Function(String? url)? onTapSpecial;
   final void Function(String? url)? onPageStarted;
   final void Function(String? url)? onPageFinished;
   final void Function(WebResourceError error)? onWebResourceError;
@@ -63,6 +67,8 @@ class FlutterMacOSWebView {
   /// [modalTitle] - title for window when using `modal` presentation style
   ///
   /// [sheetCloseButtonTitle] - title for close button when using `sheet` presentation style
+  ///
+  /// [specialButtonText] - title for special button when using `sheet` presentation style
   Future<void> open({
     required String url,
     bool javascriptEnabled = true,
@@ -72,6 +78,8 @@ class FlutterMacOSWebView {
     String? userAgent,
     String modalTitle = '',
     String sheetCloseButtonTitle = 'Close',
+    String specialButtonText = 'Special',
+    bool showSpecialButton = false,
   }) async {
     assert(url.trim().isNotEmpty);
 
@@ -85,6 +93,9 @@ class FlutterMacOSWebView {
       'userAgent': userAgent,
       'modalTitle': modalTitle,
       'sheetCloseButtonTitle': sheetCloseButtonTitle,
+      'showSetUrlButton': onSetUrl != null,
+      'specialButtonText': specialButtonText,
+      'showSpecialButton': showSpecialButton,
       // 'customOrigin': origin != null,
       // 'x': origin?.dx,
       // 'y': origin?.dy,
@@ -96,19 +107,30 @@ class FlutterMacOSWebView {
     await _channel.invokeMethod('close');
   }
 
+  /// Gets current URL of WebView
+  Future<String?> getCurrentUrl() async {
+    return await _channel.invokeMethod('getCurrentUrl');
+  }
+
   Future<void> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onOpen':
         onOpen?.call();
         return;
       case 'onClose':
-        onClose?.call();
+        onClose?.call(call.arguments['url']);
+        return;
+      case 'onSetUrl':
+        onSetUrl?.call(call.arguments['url']);
         return;
       case 'onPageStarted':
         onPageStarted?.call(call.arguments['url']);
         return;
       case 'onPageFinished':
         onPageFinished?.call(call.arguments['url']);
+        return;
+      case 'onTapSpecial':
+        onTapSpecial?.call(call.arguments['url']);
         return;
       case 'onWebResourceError':
         onWebResourceError?.call(
