@@ -99,7 +99,9 @@ public class FlutterMacOSWebViewPlugin: NSObject, FlutterPlugin {
                 presentationStyle: presentationStyle,
                 modalTitle: args["modalTitle"] as! String,
                 sheetCloseButtonTitle: args["sheetCloseButtonTitle"] as! String,
-                showSetUrlButton: args["showSetUrlButton"] as! Bool
+                showSetUrlButton: args["showSetUrlButton"] as! Bool,
+                specialButtonText: args["specialButtonText"] as! String,
+                showSpecialButton: args["showSpecialButton"] as! Bool
             )
         }
         guard let webViewCtrl = webViewController else {

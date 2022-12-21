@@ -25,6 +25,8 @@ class WebViewController: NSViewController {
     private let modalTitle: String!
     private let sheetCloseButtonTitle: String
     private let showSetUrlButton: Bool
+    private let specialButtonText: String
+    private let showSpecialButton: Bool
 
     var javascriptEnabled: Bool {
         set { webview.configuration.preferences.javaScriptEnabled = newValue }
@@ -48,7 +50,9 @@ class WebViewController: NSViewController {
         presentationStyle: PresentationStyle,
         modalTitle: String,
         sheetCloseButtonTitle: String,
-        showSetUrlButton: Bool
+        showSetUrlButton: Bool,
+        specialButtonText: String,
+        showSpecialButton: Bool
     ) {
         self.channel = channel
         self.frame = frame
@@ -56,6 +60,8 @@ class WebViewController: NSViewController {
         self.modalTitle = modalTitle
         self.sheetCloseButtonTitle = sheetCloseButtonTitle
         self.showSetUrlButton = showSetUrlButton
+        self.specialButtonText = specialButtonText
+        self.showSpecialButton = showSpecialButton
 
         webview = WKWebView()
 
@@ -94,6 +100,11 @@ class WebViewController: NSViewController {
 
     @objc private func goForward() {
         webview.goForward()
+    }
+
+    @objc private func tapSpecial() {
+        let url = webview.url?.absoluteString
+        channel.invokeMethod("onTapSpecial", arguments: ["url": url])
     }
 
     private func setupViews() {
@@ -138,6 +149,20 @@ class WebViewController: NSViewController {
             closeButton.action = #selector(closeSheet)
             closeButton.translatesAutoresizingMaskIntoConstraints = false
             bottomBar.addSubview(closeButton)
+
+            let specialButton = NSButton()
+            specialButton.isBordered = true
+            specialButton.isHidden = !showSpecialButton
+            specialButton.sizeToFit()
+            specialButton.bezelColor = .systemRed
+            specialButton.title = specialButtonText
+            specialButton.font = NSFont.systemFont(ofSize: 14.0)
+            specialButton.bezelStyle = .rounded
+            specialButton.setButtonType(.momentaryPushIn)
+            specialButton.target = self
+            specialButton.action = #selector(tapSpecial)
+            specialButton.translatesAutoresizingMaskIntoConstraints = false
+            bottomBar.addSubview(specialButton)
 
             let setUrlButton = NSButton()
             setUrlButton.isBordered = true
@@ -189,6 +214,10 @@ class WebViewController: NSViewController {
                 setUrlButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
                 setUrlButton.widthAnchor.constraint(equalToConstant: setUrlButton.frame.width + 20.0),
                 setUrlButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
+
+                specialButton.trailingAnchor.constraint(equalTo: setUrlButton.leadingAnchor, constant: -10.0),
+                specialButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
+                specialButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
 
                 backButton.leadingAnchor.constraint(equalTo: bottomBar.leadingAnchor),
                 backButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),

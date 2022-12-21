@@ -11,26 +11,22 @@ class App extends StatelessWidget {
       onOpen: () => print('Opened'),
       onClose: (url) => print('Closed $url'),
       onSetUrl: (url) => print('Set url $url'),
+      onTapSpecial: (url) => print("Special $url"),
       onPageStarted: (url) => print('Page started: $url'),
       onPageFinished: (url) => print('Page finished: $url'),
-      onWebResourceError: (err) {
-        print(
-          'Error: ${err.errorCode}, ${err.errorType}, ${err.domain}, ${err.description}',
-        );
-      },
+      onWebResourceError: (err) => print(
+        'Error: ${err.errorCode}, ${err.errorType}, ${err.domain}, ${err.description}',
+      ),
     );
-
     await webview.open(
       url: 'https://google.com',
       presentationStyle: presentationStyle,
-      size: Size(400.0, 400.0),
+      size: Size(800, 600),
       userAgent:
           'Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+      showSpecialButton: true,
+      specialButtonText: "Link is broken",
     );
-
-    // Timer.periodic(Duration(seconds: 3), (t) async {
-    //   print(await webview.getCurrentUrl());
-    // });
   }
 
   @override

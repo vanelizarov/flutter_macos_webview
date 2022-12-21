@@ -30,6 +30,7 @@ class FlutterMacOSWebView {
     this.onOpen,
     this.onClose,
     this.onSetUrl,
+    this.onTapSpecial,
     this.onPageStarted,
     this.onPageFinished,
     this.onWebResourceError,
@@ -42,6 +43,7 @@ class FlutterMacOSWebView {
   final void Function()? onOpen;
   final void Function(String? url)? onClose;
   final void Function(String? url)? onSetUrl;
+  final void Function(String? url)? onTapSpecial;
   final void Function(String? url)? onPageStarted;
   final void Function(String? url)? onPageFinished;
   final void Function(WebResourceError error)? onWebResourceError;
@@ -65,6 +67,8 @@ class FlutterMacOSWebView {
   /// [modalTitle] - title for window when using `modal` presentation style
   ///
   /// [sheetCloseButtonTitle] - title for close button when using `sheet` presentation style
+  ///
+  /// [specialButtonText] - title for special button when using `sheet` presentation style
   Future<void> open({
     required String url,
     bool javascriptEnabled = true,
@@ -74,6 +78,8 @@ class FlutterMacOSWebView {
     String? userAgent,
     String modalTitle = '',
     String sheetCloseButtonTitle = 'Close',
+    String specialButtonText = 'Special',
+    bool showSpecialButton = false,
   }) async {
     assert(url.trim().isNotEmpty);
 
@@ -88,6 +94,8 @@ class FlutterMacOSWebView {
       'modalTitle': modalTitle,
       'sheetCloseButtonTitle': sheetCloseButtonTitle,
       'showSetUrlButton': onSetUrl != null,
+      'specialButtonText': specialButtonText,
+      'showSpecialButton': showSpecialButton,
       // 'customOrigin': origin != null,
       // 'x': origin?.dx,
       // 'y': origin?.dy,
@@ -120,6 +128,9 @@ class FlutterMacOSWebView {
         return;
       case 'onPageFinished':
         onPageFinished?.call(call.arguments['url']);
+        return;
+      case 'onTapSpecial':
+        onTapSpecial?.call(call.arguments['url']);
         return;
       case 'onWebResourceError':
         onWebResourceError?.call(
