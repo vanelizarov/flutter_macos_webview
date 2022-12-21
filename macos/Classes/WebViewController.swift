@@ -107,6 +107,17 @@ class WebViewController: NSViewController {
         channel.invokeMethod("onTapSpecial", arguments: ["url": url])
     }
 
+    @objc private func openUrl() {
+        let url = textField.stringValue
+        if url.starts(with: "http://") || url.starts(with: "https://") {
+            webview.load(URLRequest(url: URL(string: url)!))
+        } else {
+            webview.load(URLRequest(url: URL(string: "https://\(url)")!))
+        }
+    }
+
+    let textField = NSTextField()
+
     private func setupViews() {
         webview.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(webview)
@@ -149,6 +160,27 @@ class WebViewController: NSViewController {
             closeButton.action = #selector(closeSheet)
             closeButton.translatesAutoresizingMaskIntoConstraints = false
             bottomBar.addSubview(closeButton)
+
+            textField.isEditable = true
+            textField.textColor = .white
+            textField.font = NSFont.systemFont(ofSize: 14.0)
+            textField.placeholderString = "https://example.com"
+            textField.translatesAutoresizingMaskIntoConstraints = false
+            textField.bezelStyle = .roundedBezel
+            bottomBar.addSubview(textField)
+
+            let searchButton = NSButton()
+            searchButton.isBordered = false
+            searchButton.title = "Go"
+            searchButton.font = NSFont.systemFont(ofSize: 14.0)
+            searchButton.contentTintColor = .systemBlue
+            searchButton.bezelStyle = .rounded
+            searchButton.setButtonType(.momentaryChange)
+            searchButton.sizeToFit()
+            searchButton.target = self
+            searchButton.action = #selector(openUrl)
+            searchButton.translatesAutoresizingMaskIntoConstraints = false
+            bottomBar.addSubview(searchButton)
 
             let specialButton = NSButton()
             specialButton.isBordered = true
@@ -228,6 +260,17 @@ class WebViewController: NSViewController {
                 forwardButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
                 forwardButton.widthAnchor.constraint(equalToConstant: forwardButton.frame.width + 20.0),
                 forwardButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
+
+                textField.leadingAnchor.constraint(equalTo: forwardButton.trailingAnchor, constant: 20.0),
+                textField.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
+                textField.heightAnchor.constraint(equalToConstant: 25.0),
+                textField.widthAnchor.constraint(equalToConstant: 250.0),
+
+                // add the searchButton right next to the textField
+                searchButton.leadingAnchor.constraint(equalTo: textField.trailingAnchor),
+                searchButton.centerYAnchor.constraint(equalTo: bottomBar.centerYAnchor),
+                searchButton.widthAnchor.constraint(equalToConstant: searchButton.frame.width + 20.0),
+                searchButton.heightAnchor.constraint(equalTo: bottomBar.heightAnchor),
 
             ])
         } else {
